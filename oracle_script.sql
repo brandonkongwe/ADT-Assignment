@@ -47,8 +47,7 @@ CREATE TYPE DriverType AS OBJECT
     email VARCHAR2(30),
     phone VARCHAR2(10),
     driver_license_no NUMBER(6),
-    vehicle_id NUMBER(5),
-    MEMBER FUNCTION calculate_total_earnings RETURN NUMBER
+    vehicle_id NUMBER(5)
 );
 /
 
@@ -116,6 +115,14 @@ CREATE TYPE RideType AS OBJECT
 );
 /
 
+CREATE OR REPLACE TYPE BODY RideType AS
+    MEMBER FUNCTION calculate_ride_duration RETURN INTERVAL DAY TO SECOND IS
+    BEGIN
+        RETURN dropoff_time - pickup_time;
+    END;
+END;
+/
+
 /* Creating Tables */
 
 /* Passenger Table */
@@ -150,13 +157,20 @@ CREATE TABLE ride OF RideType
 );
 /
 
-/* Inserting Data */
+/* calculate_total_earnings() Stored Function */
+CREATE OR REPLACE FUNCTION calculate_total_earnings (driver_no driver.driver_id%TYPE) RETURN NUMBER IS
+    earnings NUMBER;
+BEGIN
+    SELECT SUM(r.payment.amount) AS amount
+    INTO earnings
+    FROM driver d, ride r
+    WHERE d.driver_id = r.driver_id AND d.driver_id = driver_no
+    GROUP BY d.driver_id;
+    RETURN earnings;
+END;
+/
 
-/* passenger_id: 300X
-   driver_id: 100X
-   vehicle_id: 400X
-   ride_id: 200X
-   payment_id: 500X */
+/* Inserting Data */
    
 /* Inserting Vehicle Data */
 INSERT INTO vehicle
@@ -208,7 +222,7 @@ INSERT INTO ride
 VALUES (2002, 1001, 3002, LocationType('Home', AddressType('Block 4', 'Francistown'), 21.1661, 27.5144),
         LocationType('Nyangabwe Hospital', AddressType('Extension', 'Francistown'), 21.1661, 27.5144),
         '12-FEB-2024:15:30:20.00', '12-FEB-2024:15:45:10.00', 
-        DebitCard(5002, '12-FEB-2024:15:47:10.00', 15, '9867-1242-4356-2544', 'Daniel James', '01-AUG-2026', 872),
+        DebitCard(5002, '12-FEB-2024:15:47:10.00', 15, '9867-1242-4356-2544', 'Daniel James', '31-AUG-2026', 872),
         3);
 
 INSERT INTO ride
@@ -222,7 +236,7 @@ INSERT INTO ride
 VALUES (2004, 1002, 3002, LocationType('Church', AddressType('Phase 5', 'Francistown'), 21.1661, 27.5144),
         LocationType('Sunshine Plaza', AddressType('Satellite', 'Francistown'), 21.1661, 27.5144),
         '14-FEB-2024:14:20:20.00', '14-FEB-2024:14:50:10.00', 
-        DebitCard(5004, '14-FEB-2024:14:52:10.00', 30, '9867-1242-4356-2544', 'Daniel James', '01-AUG-2026', 872),
+        DebitCard(5004, '14-FEB-2024:14:52:10.00', 30, '9867-1242-4356-2544', 'Daniel James', '31-AUG-2026', 872),
         3);
 
 INSERT INTO ride
@@ -236,7 +250,7 @@ INSERT INTO ride
 VALUES (2006, 1004, 3004, LocationType('University of Botswana', AddressType('Notwane Road', 'Gaborone'), 24.6580, 25.9077),
         LocationType('The Fields Mall', AddressType('Central Business District', 'Gaborone'), 24.6580, 25.9077),
         '12-FEB-2024:16:30:20.00', '12-FEB-2024:17:15:10.00', 
-        DebitCard(5006, '12-FEB-2024:17:17:10.00', 35, '2345-8477-9764-2321', 'Pearl Adams', '01-NOV-2027', 456),
+        DebitCard(5006, '12-FEB-2024:17:17:10.00', 35, '2345-8477-9764-2321', 'Pearl Adams', '30-NOV-2027', 456),
         3);
 
 INSERT INTO ride
@@ -250,6 +264,17 @@ INSERT INTO ride
 VALUES (2008, 1003, 3004, LocationType('Riverwalk Mall', AddressType('Tlokweng Road', 'Gaborone'), 24.6580, 25.9077),
         LocationType('Sir Seretse Khama International Airport', AddressType('Airport Road', 'Gaborone'), 24.6580, 25.9077),
         '14-FEB-2024:16:15:20.00', '14-FEB-2024:16:55:10.00', 
-        DebitCard(5006, '14-FEB-2024:16:58:10.00', 40, '2345-8477-9764-2321', 'Pearl Adams', '01-NOV-2027', 456),
+        DebitCard(5006, '14-FEB-2024:16:58:10.00', 40, '2345-8477-9764-2321', 'Pearl Adams', '30-NOV-2027', 456),
         4);
 
+/* Queries */
+
+/* Task 5 (a) */
+
+SELECT r.ride_id, p.name AS passenger_name, d.name AS driver_name, v.make || ' ' || v.model AS vehicle_name
+FROM ride r
+INNER JOIN passenger p ON r.passenger_id = p.passenger_id
+LEFT JOIN driver d ON r.driver_id = d.driver_id
+RIGHT JOIN vehicle v ON d.vehicle_id = v.vehicle_id
+WHERE r.pickup_time BETWEEN TO_TIMESTAMP('14-FEB-2024:00:00:00.00', 'DD-MON-YYYY:HH24:MI:SS.FF') AND TO_TIMESTAMP('14-FEB-2024:23:59:59.99', 'DD-MON-YYYY:HH24:MI:SS.FF')
+FETCH FIRST 3 ROWS ONLY;
