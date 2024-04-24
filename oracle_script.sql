@@ -143,8 +143,8 @@ CREATE TABLE vehicle OF VehicleType
 CREATE TABLE driver OF DriverType
 (
     driver_id PRIMARY KEY,
-    driver_license_no UNIQUE,
-    vehicle_id REFERENCES vehicle(vehicle_id)
+    driver_license_no NOT NULL UNIQUE,
+    vehicle_id NOT NULL REFERENCES vehicle(vehicle_id)
 );
 /
 
@@ -152,8 +152,8 @@ CREATE TABLE driver OF DriverType
 CREATE TABLE ride OF RideType
 (
     ride_id PRIMARY KEY,
-    driver_id REFERENCES driver(driver_id),
-    passenger_id REFERENCES passenger(passenger_id)
+    driver_id NOT NULL REFERENCES driver(driver_id),
+    passenger_id NOT NULL REFERENCES passenger(passenger_id)
 );
 /
 
@@ -161,7 +161,7 @@ CREATE TABLE ride OF RideType
 CREATE OR REPLACE FUNCTION calculate_total_earnings (driver_no driver.driver_id%TYPE) RETURN NUMBER IS
     earnings NUMBER;
 BEGIN
-    SELECT SUM(r.payment.amount) AS amount
+    SELECT SUM(r.payment.amount)
     INTO earnings
     FROM driver d, ride r
     WHERE d.driver_id = r.driver_id AND d.driver_id = driver_no
@@ -270,11 +270,20 @@ VALUES (2008, 1003, 3004, LocationType('Riverwalk Mall', AddressType('Tlokweng R
 /* Queries */
 
 /* Task 5 (a) */
-
-SELECT r.ride_id, p.name AS passenger_name, d.name AS driver_name, v.make || ' ' || v.model AS vehicle_name
+SELECT r.ride_id, p.name AS passenger_name, d.name AS driver_name, r.pickup_location.location_name AS pickup_location, 
+       r.pickup_location.address.city AS city, v.make || ' ' || v.model AS vehicle_name, v.license_plate_no
 FROM ride r
 INNER JOIN passenger p ON r.passenger_id = p.passenger_id
 LEFT JOIN driver d ON r.driver_id = d.driver_id
 RIGHT JOIN vehicle v ON d.vehicle_id = v.vehicle_id
-WHERE r.pickup_time BETWEEN TO_TIMESTAMP('14-FEB-2024:00:00:00.00', 'DD-MON-YYYY:HH24:MI:SS.FF') AND TO_TIMESTAMP('14-FEB-2024:23:59:59.99', 'DD-MON-YYYY:HH24:MI:SS.FF')
-FETCH FIRST 3 ROWS ONLY;
+WHERE r.pickup_time BETWEEN '12-FEB-2024:00:00:00.00' AND '14-FEB-2024:23:59:59.99'
+AND r.pickup_location.address.city = 'Gaborone';
+
+
+/* Task 5 (b) */
+SELECT d.name, d.driver_license_no AS drivers_license_no, d.address.city AS city
+FROM driver d
+UNION 
+SELECT p.name, CAST(NULL AS NUMBER) AS drivers_license_no, p.address.city AS city
+FROM passenger p
+ORDER BY 1;
