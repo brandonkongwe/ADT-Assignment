@@ -266,6 +266,7 @@ VALUES (2008, 1003, 3004, LocationType('Riverwalk Mall', AddressType('Tlokweng R
         '14-FEB-2024:16:15:20.00', '14-FEB-2024:16:55:10.00', 
         DebitCard(5006, '14-FEB-2024:16:58:10.00', 40, '2345-8477-9764-2321', 'Pearl Adams', '30-NOV-2027', 456),
         4);
+/
 
 /* Queries */
 
@@ -278,7 +279,7 @@ LEFT JOIN driver d ON r.driver_id = d.driver_id
 RIGHT JOIN vehicle v ON d.vehicle_id = v.vehicle_id
 WHERE r.pickup_time BETWEEN '12-FEB-2024:00:00:00.00' AND '14-FEB-2024:23:59:59.99'
 AND r.pickup_location.address.city = 'Gaborone';
-
+/
 
 /* Task 5 (b) */
 SELECT d.name, d.driver_license_no AS drivers_license_no, d.address.city AS city
@@ -287,3 +288,30 @@ UNION
 SELECT p.name, CAST(NULL AS NUMBER) AS drivers_license_no, p.address.city AS city
 FROM passenger p
 ORDER BY 1;
+/
+
+/* Task 5 (c) */
+CREATE OR REPLACE PROCEDURE show_debit_card_payments AS
+    ride_no ride.ride_id%TYPE;
+    passenger_no passenger.passenger_id%TYPE;
+    passenger_name passenger.name%TYPE;
+    card_number VARCHAR2(20);
+    amount_paid NUMBER;
+CURSOR debit_cursor IS
+    SELECT r.ride_id, p.passenger_id, p.name AS passenger_name, TREAT(r.payment AS DebitCard).card_no AS card_number, 
+           r.payment.amount AS amount_paid
+    FROM ride r, passenger p
+    WHERE TREAT(r.payment AS DebitCard) IS NOT NULL
+    AND r.passenger_id = p.passenger_id;
+BEGIN
+    OPEN debit_cursor;
+    LOOP
+    FETCH debit_cursor INTO ride_no, passenger_no, passenger_name, card_number, amount_paid;
+        EXIT WHEN debit_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Ride ID: ' || ride_no || ', ' || 'Passenger ID: ' || passenger_no || ', ' || 'Name: ' || passenger_name 
+        || ', ' || 'Card Number: ' || card_number || ', ' || 'Amount Paid: ' || amount_paid);
+    END LOOP;
+    CLOSE debit_cursor;
+END;
+
+EXECUTE show_debit_card_payments();
