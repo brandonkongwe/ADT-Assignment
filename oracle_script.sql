@@ -236,7 +236,7 @@ INSERT INTO ride
 VALUES (2004, 1002, 3002, LocationType('Church', AddressType('Phase 5', 'Francistown'), 21.1661, 27.5144),
         LocationType('Sunshine Plaza', AddressType('Satellite', 'Francistown'), 21.1661, 27.5144),
         '14-FEB-2024:14:20:20.00', '14-FEB-2024:14:50:10.00', 
-        DebitCard(5004, '14-FEB-2024:14:52:10.00', 30, '9867-1242-4356-2544', 'Daniel James', '31-AUG-2026', 872),
+        DebitCard(5004, '14-FEB-2024:14:52:10.00', 35, '9867-1242-4356-2544', 'Daniel James', '31-AUG-2026', 872),
         3);
 
 INSERT INTO ride
@@ -313,5 +313,24 @@ BEGIN
     END LOOP;
     CLOSE debit_cursor;
 END;
+/
 
 EXECUTE show_debit_card_payments();
+
+/* Task 5 (d) */
+SELECT r.ride_id, r.pickup_location.location_name AS pickup_location, r.dropoff_location.location_name AS dropoff_location, 
+       EXTRACT(MINUTE FROM r.calculate_ride_duration()) AS "RIDE_DURATION (MINUTES)"
+FROM ride r
+WHERE r.calculate_ride_duration() > INTERVAL '30' MINUTE;
+/
+
+/* Task 5 (e) */
+SELECT DISTINCT d.name AS driver_name, calculate_total_earnings(d.driver_id) AS total_earnings,
+DENSE_RANK() OVER (ORDER BY calculate_total_earnings(d.driver_id) DESC) AS earnings_ranking,
+COUNT(*) OVER (PARTITION BY d.name) AS number_of_rides,
+AVG(EXTRACT(MINUTE FROM r.calculate_ride_duration())) OVER (PARTITION BY d.name) AS "AVERAGE_RIDE_DURATION (MINUTES)",
+MIN(r.passenger_rating) OVER (PARTITION BY d.name) AS lowest_rating,
+MAX(r.passenger_rating) OVER (PARTITION BY d.name) AS highest_rating
+FROM driver d, ride r
+WHERE d.driver_id = r.driver_id;
+/
