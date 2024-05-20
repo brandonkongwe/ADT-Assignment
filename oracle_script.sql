@@ -229,7 +229,7 @@ INSERT INTO ride
 VALUES (2003, 1002, 3001, LocationType('Galo Mall', AddressType('Minestone', 'Francistown'), 21.1661, 27.5144),
         LocationType('Francistown Technical College', AddressType('Gerald', 'Francistown'), 21.1661, 27.5144),
         '14-FEB-2024:09:10:20.00', '14-FEB-2024:09:45:10.00', 
-        EFT(5003, '14-FEB-2024:15:47:10.00', 35, 644421359902, 'Lee Jones'),
+        EFT(5003, '14-FEB-2024:09:47:10.00', 35, 644421359902, 'Lee Jones'),
         4);
 
 INSERT INTO ride
@@ -264,7 +264,7 @@ INSERT INTO ride
 VALUES (2008, 1003, 3004, LocationType('Riverwalk Mall', AddressType('Tlokweng Road', 'Gaborone'), 24.6580, 25.9077),
         LocationType('Sir Seretse Khama International Airport', AddressType('Airport Road', 'Gaborone'), 24.6580, 25.9077),
         '14-FEB-2024:16:15:20.00', '14-FEB-2024:16:55:10.00', 
-        DebitCard(5006, '14-FEB-2024:16:58:10.00', 40, '2345-8477-9764-2321', 'Pearl Adams', '30-NOV-2027', 456),
+        DebitCard(5008, '14-FEB-2024:16:58:10.00', 40, '2345-8477-9764-2321', 'Pearl Adams', '30-NOV-2027', 456),
         4);
 /
 
