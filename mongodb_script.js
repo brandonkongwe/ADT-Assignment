@@ -1,6 +1,13 @@
 use abc_driver;
 
 
+// dropping collections
+db.vehicle.drop();
+db.driver.drop();
+db.passenger.drop();
+db.ride.drop();
+
+
 // create 'vehicle' collection 
 db.createCollection("vehicle");
 
@@ -174,12 +181,12 @@ db.ride.insertOne({
         latitude: 21.1661, 
         longitude: 27.5144
     },
-    pickup_time: ISODate("2024-02-12T12:50:40Z"),
-    dropoff_time: ISODate("2024-02-12T13:02:20Z"), 
+    pickup_time: new ISODate("2024-02-12T12:50:40Z"),
+    dropoff_time: new ISODate("2024-02-12T13:02:20Z"), 
     payment: {
         type: "EFT",
         payment_id: 5001, 
-        payment_time: ISODate("2024-02-12T13:04:20Z"), 
+        payment_time: new ISODate("2024-02-12T13:04:20Z"), 
         amount: 20,
         account_number: "644421359902", 
         account_owner: "Lee Jones"
@@ -209,16 +216,16 @@ db.ride.insertOne({
         latitude: 21.1661, 
         longitude: 27.5144
     },
-    pickup_time: ISODate("2024-02-12T15:30:20Z"),
-    dropoff_time: ISODate("2024-02-12T15:45:10Z"),
+    pickup_time: new ISODate("2024-02-12T15:30:20Z"),
+    dropoff_time: new ISODate("2024-02-12T15:45:10Z"),
     payment: {
         type: "Debit Card",
         payment_id: 5002,
-        payment_time: ISODate("2024-02-12T15:47:10Z"),
+        payment_time: new ISODate("2024-02-12T15:47:10Z"),
         amount: 15,
         card_no: "9867-1242-4356-2544", 
         cardholder_name: "Daniel James", 
-        expiration_date: ISODate("2026-08-31"),
+        expiration_date: new ISODate("2026-08-31"),
         CVV: 872
     },
     passenger_rating: 3
@@ -246,12 +253,12 @@ db.ride.insertOne({
         latitude: 21.1661, 
         longitude: 27.5144
     },
-    pickup_time: ISODate("2024-02-14T09:10:20Z"),
-    dropoff_time: ISODate("2024-02-14T09:45:10Z"),
+    pickup_time: new ISODate("2024-02-14T09:10:20Z"),
+    dropoff_time: new ISODate("2024-02-14T09:45:10Z"),
     payment: {
         type: "EFT",
         payment_id: 5003,
-        payment_time: ISODate("2024-02-14T09:47:10"),
+        payment_time: new ISODate("2024-02-14T09:47:10"),
         amount: 35,
         account_number: "644421359902", 
         account_owner: "Lee Jones"
@@ -281,16 +288,16 @@ db.ride.insertOne({
         latitude: 21.1661, 
         longitude: 27.5144
     },
-    pickup_time: ISODate("2024-02-14T14:20:20Z"),
-    dropoff_time: ISODate("2024-02-14T14:50:10Z"),
+    pickup_time: new ISODate("2024-02-14T14:20:20Z"),
+    dropoff_time: new ISODate("2024-02-14T14:50:10Z"),
     payment: {
         type: "Debit Card",
         payment_id: 5004,
-        payment_time: ISODate("2024-02-14T14:52:10Z"),
+        payment_time: new ISODate("2024-02-14T14:52:10Z"),
         amount: 35,
         card_no: "9867-1242-4356-2544", 
         cardholder_name: "Daniel James", 
-        expiration_date: ISODate("2026-08-31"),
+        expiration_date: new ISODate("2026-08-31"),
         CVV: 872
     },
     passenger_rating: 3
@@ -318,12 +325,12 @@ db.ride.insertOne({
         latitude: 24.6580,  
         longitude: 25.9077
     },
-    pickup_time: ISODate("2024-02-12T11:05:20Z"),
-    dropoff_time: ISODate("2024-02-12T11:35:10Z"),
+    pickup_time: new ISODate("2024-02-12T11:05:20Z"),
+    dropoff_time: new ISODate("2024-02-12T11:35:10Z"),
     payment: {
         type: "EFT",
         payment_id: 5005,
-        payment_time: ISODate("2024-02-12T11:37:10Z"),
+        payment_time: new ISODate("2024-02-12T11:37:10Z"),
         amount: 30,
         account_number: "673392438573",
         account_owner: "Alice Smith"
@@ -353,16 +360,16 @@ db.ride.insertOne({
         latitude: 24.6580,  
         longitude: 25.9077
     },
-    pickup_time: ISODate("2024-02-12T16:30:20Z"),
-    dropoff_time: ISODate("2024-02-12T17:15:10Z"),
+    pickup_time: new ISODate("2024-02-12T16:30:20Z"),
+    dropoff_time: new ISODate("2024-02-12T17:15:10Z"),
     payment : {
         type: "Debit Card",
         payment_id: 5006,
-        payment_time: ISODate("2024-02-12T17:17:10Z"),
+        payment_time: new ISODate("2024-02-12T17:17:10Z"),
         amount: 35,
         card_no: "2345-8477-9764-2321",
         cardholder_name: "Pearl Adams",
-        expiration_date: ISODate("2027-11-30"),
+        expiration_date: new ISODate("2027-11-30"),
         CVV: 456
     },
     passenger_rating: 3
@@ -390,12 +397,12 @@ db.ride.insertOne({
         latitude: 24.6580,  
         longitude: 25.9077
     },
-    pickup_time: ISODate("2024-02-14T13:20:20Z"),
-    dropoff_time: ISODate("2024-02-14T13:55:10Z"),
+    pickup_time: new ISODate("2024-02-14T13:20:20Z"),
+    dropoff_time: new ISODate("2024-02-14T13:55:10Z"),
     payment: {
         type: "EFT",
         payment_id: 5007,
-        payment_time: ISODate("2024-02-14T13:58:10Z"),
+        payment_time: new ISODate("2024-02-14T13:58:10Z"),
         amount: 40,
         account_number: "673392438573",
         account_owner: "Alice Smith"
@@ -425,19 +432,150 @@ db.ride.insertOne({
         latitude: 24.6580,  
         longitude: 25.9077
     },
-    pickup_time: ISODate("2024-02-14T16:15:20Z"),
-    dropoff_time: ISODate("2024-02-14T16:55:10Z"),
+    pickup_time: new ISODate("2024-02-14T16:15:20Z"),
+    dropoff_time: new ISODate("2024-02-14T16:55:10Z"),
     payment: {
         type: "Debit Card",
         payment_id: 5008,
-        payment_time: ISODate("2024-02-14T16:58:10Z"),
+        payment_time: new ISODate("2024-02-14T16:58:10Z"),
         amount: 40,
         card_no: "2345-8477-9764-2321",
         cardholder_name: "Pearl Adams",
-        expiration_date: ISODate("2027-11-30"),
+        expiration_date: new ISODate("2027-11-30"),
         CVV: 456
     },
     passenger_rating: 4
 });
 
 db.ride.find();
+
+// Queries
+
+// Query a: A join of three or more tables and the query must include a restriction on the rows selected
+db.ride.aggregate([
+    
+   {
+        $match: {
+            $and: [
+                    {"pickup_location.address.city": "Gaborone"}, 
+                    {pickup_time: {$gte: ISODate("2024-02-12T00:00:00Z"), $lte: ISODate("2024-02-14T23:59:59Z")}}
+                ]
+        }
+    },
+    {
+        $lookup: {
+            from: "passenger",
+            localField: "passenger_id",
+            foreignField: "passenger_id",
+            as: "passenger_info"
+        }
+    },
+    {
+        $unwind: "$passenger_info"
+    },
+    {
+        $lookup: {
+            from: "driver",
+            localField: "driver_id",
+            foreignField: "driver_id",
+            as: "driver_info"
+        }
+    },
+    {
+        $unwind: {
+            path: "$driver_info"
+        }
+    },
+    {
+        $lookup: {
+            from: "vehicle",
+            localField: "driver_info.vehicle_id",
+            foreignField: "vehicle_id",
+            as: "vehicle_info"
+        }
+    },
+    {
+        $unwind: {
+            path: "$vehicle_info"
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            ride_id: 1,
+            passenger_name: "$passenger_info.name",
+            driver_name: "$driver_info.name",
+            pickup_location: "$pickup_location.location_name",
+            city: "$pickup_location.address.city",
+            vehicle_name: {
+                $concat: ["$vehicle_info.make", " ", "$vehicle_info.model"]
+            },
+            license_plate_no: "$vehicle_info.license_plate_no"
+        }
+    }
+]);
+
+// Query b: A query which uses one (or more) of the UNION, DIFFERENCE or INTERSECT operators
+db.driver.aggregate([
+    {
+        $project: {
+            _id: 0,
+            name: 1,
+            driver_license_no: "$driver_license_no",
+            city: "$address.city",
+        }
+    },
+    {
+        $unionWith: {
+            coll: "passenger",
+            pipeline: [
+                {
+                    $project: {
+                        _id: 0, 
+                        name: 1, 
+                        driver_license_no: {$literal: null}, 
+                        city: "$address.city"}
+                    }
+            ]
+        }
+    },
+    {
+        $sort: {
+            name: 1
+        }
+    }
+]);
+
+// Query c: A query which requires use of either a nested table or subtypes
+db.ride.aggregate([
+    {
+        $match: {
+            "payment.type": "Debit Card"
+        }
+    },
+    {
+        $lookup: {
+            from: "passenger",
+            localField: "passenger_id",
+            foreignField: "passenger_id",
+            as: "passenger_info"
+        }
+    },
+    {
+        $unwind: {
+            path: "$passenger_info"
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            ride_id: 1,
+            passenger_id: "$passenger_info.passenger_id",
+            passenger_name: "$passenger_info.name",
+            card_number: "$payment.card_no",
+            amount_paid: "$payment.amount"
+        }
+    }
+]);
+
+// Query d: A query using temporal features 
