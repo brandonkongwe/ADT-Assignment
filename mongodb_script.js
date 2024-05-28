@@ -579,3 +579,107 @@ db.ride.aggregate([
 ]);
 
 // Query d: A query using temporal features 
+db.ride.aggregate([
+    {
+        $addFields: {
+            ride_duration: {
+                $subtract: ["$dropoff_time", "$pickup_time"]
+            }
+        }
+    },
+    {
+        $match: {
+            ride_duration: { $gt: 30 * 60 * 1000 } 
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            ride_id: 1,
+            pickup_location: "$pickup_location.location_name",
+            dropoff_location: "$dropoff_location.location_name",
+            "ride_duration (minutes)": {
+                $divide: ["$ride_duration", 60 * 1000]
+            }
+        }   
+    }
+]);
+
+// Query e: A query replicating Oracle SQL OLAP (e.g., ROLLUP, CUBE, PARTITION) features 
+db.driver.aggregate([
+    {
+        $lookup: {
+            from: "ride",
+            localField: "driver_id",
+            foreignField: "driver_id",
+            as: "rides"
+        }
+    },
+    {
+        $unwind: "$rides"
+    },
+    {
+        $addFields: {
+            "rides.ride_duration": {
+                $divide: [{ $subtract: ["$rides.dropoff_time", "$rides.pickup_time"]}, 60 * 1000] 
+            },
+            "rides.ride_earnings": "$rides.payment.amount" 
+        }
+    },
+    {
+        $group: {
+            _id: "$driver_id",
+            driver_name: {$first: "$name"},
+            total_earnings: {$sum: "$rides.ride_earnings"},
+            number_of_rides: {$sum: 1},
+            avg_ride_duration: {$avg: "$rides.ride_duration"},
+            lowest_rating: {$min: "$rides.passenger_rating"},
+            highest_rating: {$max: "$rides.passenger_rating"}
+        }
+    },
+    {
+        $facet: {
+            drivers: [
+                {$sort: { total_earnings: -1 }},
+                {$group: {
+                    _id: null,
+                    drivers: { $push: "$$ROOT" }
+                }
+            },
+        {
+            $unwind: {
+                path: "$drivers",
+                includeArrayIndex: "earnings_ranking"
+            }
+        },
+        { 
+            $project: {
+                
+                _id: "$drivers._id",
+                driver_name: "$drivers.driver_name",
+                total_earnings: "$drivers.total_earnings",
+                earnings_ranking: { $add: ["$earnings_ranking", 1] },
+                number_of_rides: "$drivers.number_of_rides",
+                avg_ride_duration: "$drivers.avg_ride_duration",
+                lowest_rating: "$drivers.lowest_rating",
+                highest_rating: "$drivers.highest_rating"
+            }
+        }
+      ]}
+    },
+    {
+        $unwind: "$drivers"
+    },
+    {
+        $project: {
+            _id: 0,
+            driver_name: "$drivers.driver_name",
+            total_earnings: "$drivers.total_earnings",
+            earnings_ranking: "$drivers.earnings_ranking",
+            number_of_rides: "$drivers.number_of_rides",
+            "average_ride_duration (minutes)": "$drivers.avg_ride_duration",
+            lowest_rating: "$drivers.lowest_rating",
+            highest_rating: "$drivers.highest_rating"
+        }
+    }
+]);
