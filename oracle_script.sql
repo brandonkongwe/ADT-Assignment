@@ -270,7 +270,7 @@ VALUES (2008, 1003, 3004, LocationType('Riverwalk Mall', AddressType('Tlokweng R
 
 /* Queries */
 
-/* Task 5 (a) */
+/* Query a: A join of three or more tables and the query must include a restriction on the rows selected */
 SELECT r.ride_id, p.name AS passenger_name, d.name AS driver_name, r.pickup_location.location_name AS pickup_location, 
        r.pickup_location.address.city AS city, v.make || ' ' || v.model AS vehicle_name, v.license_plate_no
 FROM ride r
@@ -281,7 +281,7 @@ WHERE r.pickup_time BETWEEN '12-FEB-2024:00:00:00.00' AND '14-FEB-2024:23:59:59.
 AND r.pickup_location.address.city = 'Gaborone';
 /
 
-/* Task 5 (b) */
+/* Query b: A query which uses one (or more) of the UNION, DIFFERENCE or INTERSECT operators  */
 SELECT d.name, d.driver_license_no AS drivers_license_no, d.address.city AS city
 FROM driver d
 UNION 
@@ -290,7 +290,7 @@ FROM passenger p
 ORDER BY 1;
 /
 
-/* Task 5 (c) */
+/* Query c: A query which requires use of either a nested table or subtypes */
 CREATE OR REPLACE PROCEDURE show_debit_card_payments AS
     ride_no ride.ride_id%TYPE;
     passenger_no passenger.passenger_id%TYPE;
@@ -317,14 +317,14 @@ END;
 
 EXECUTE show_debit_card_payments();
 
-/* Task 5 (d) */
+/* Query d: A query using temporal features (e.g., timestamps, intervals, etc.) of Oracle SQL  */
 SELECT r.ride_id, r.pickup_location.location_name AS pickup_location, r.dropoff_location.location_name AS dropoff_location, 
        EXTRACT(MINUTE FROM r.calculate_ride_duration()) AS "RIDE_DURATION (MINUTES)"
 FROM ride r
 WHERE r.calculate_ride_duration() > INTERVAL '30' MINUTE;
 /
 
-/* Task 5 (e) */
+/* Query e: A query using OLAP (e.g., ROLLUP, CUBE, PARTITION) features of Oracle SQL  */
 SELECT DISTINCT d.name AS driver_name, calculate_total_earnings(d.driver_id) AS total_earnings,
 DENSE_RANK() OVER (ORDER BY calculate_total_earnings(d.driver_id) DESC) AS earnings_ranking,
 COUNT(*) OVER (PARTITION BY d.name) AS number_of_rides,

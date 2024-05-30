@@ -44,7 +44,6 @@ db.vehicle.insertOne({
     license_plate_no: "B 789 BAV"
 });
 
-db.vehicle.find();
 
 // create 'driver' collection
 db.createCollection("driver");
@@ -102,8 +101,6 @@ db.driver.insertOne({
     vehicle_id: 4004
 });
 
-db.driver.find();
-
 
 // create 'passenger' collection
 db.createCollection("passenger");
@@ -153,7 +150,6 @@ db.passenger.insertOne({
     phone: "71005612"
 });
 
-db.passenger.find();
 
 // create 'ride' collection
 db.createCollection("ride");
@@ -447,13 +443,11 @@ db.ride.insertOne({
     passenger_rating: 4
 });
 
-db.ride.find();
 
 // Queries
 
 // Query a: A join of three or more tables and the query must include a restriction on the rows selected
 db.ride.aggregate([
-    
    {
         $match: {
             $and: [
@@ -589,7 +583,7 @@ db.ride.aggregate([
     },
     {
         $match: {
-            ride_duration: { $gt: 30 * 60 * 1000 } 
+            ride_duration: {$gt: 30 * 60 * 1000} // 30 minutes in milliseconds
         }
     },
     {
@@ -599,7 +593,7 @@ db.ride.aggregate([
             pickup_location: "$pickup_location.location_name",
             dropoff_location: "$dropoff_location.location_name",
             "ride_duration (minutes)": {
-                $divide: ["$ride_duration", 60 * 1000]
+                $divide: ["$ride_duration", 60 * 1000] // convert milliseconds to minutes
             }
         }   
     }
